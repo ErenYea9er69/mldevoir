@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,38 +9,43 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #090d16;
-            --bg-surface: #0f1523;
-            --bg-surface-elevated: #161e31;
-            --bg-subtle: #1c263d;
-            --border-subtle: rgba(255, 255, 255, 0.07);
-            --border-strong: rgba(255, 255, 255, 0.14);
-            --border-focus: rgba(255, 255, 255, 0.35);
+            /* Palette Lumineuse et Aérée (Fond Blanc & Ardoise Pure) */
+            --bg-base: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f1f5f9;
+            --bg-card-inner: #f8fafc;
             
-            --text-main: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --border-focus: #0f172a;
             
-            --brand-primary: #ffffff;
-            --brand-primary-hover: #f1f5f9;
-            --brand-subtle: rgba(255, 255, 255, 0.08);
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
             
-            --sentiment-pos: #10b981;
-            --sentiment-pos-bg: rgba(16, 185, 129, 0.12);
-            --sentiment-pos-border: rgba(16, 185, 129, 0.3);
+            /* Bouton d'action principal : Noir charbon / ardoise élégant et contrasté */
+            --brand-primary: #0f172a;
+            --brand-primary-hover: #1e293b;
+            --brand-subtle: rgba(15, 23, 42, 0.06);
             
-            --sentiment-neg: #f43f5e;
-            --sentiment-neg-bg: rgba(244, 63, 94, 0.12);
-            --sentiment-neg-border: rgba(244, 63, 94, 0.3);
+            /* Sentiments sobres et harmonieux */
+            --sentiment-pos: #047857;
+            --sentiment-pos-bg: #ecfdf5;
+            --sentiment-pos-border: #a7f3d0;
             
-            --sentiment-neu: #94a3b8;
-            --sentiment-neu-bg: rgba(148, 163, 184, 0.12);
-            --sentiment-neu-border: rgba(148, 163, 184, 0.25);
+            --sentiment-neg: #be123c;
+            --sentiment-neg-bg: #fff1f2;
+            --sentiment-neg-border: #fecdd3;
+            
+            --sentiment-neu: #475569;
+            --sentiment-neu-bg: #f1f5f9;
+            --sentiment-neu-border: #cbd5e1;
 
             --radius-sm: 6px;
             --radius-md: 10px;
             --radius-lg: 14px;
-            --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-subtle);
+            --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            --shadow-float: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
         }
 
         /* Reset & Base */
@@ -51,8 +56,8 @@
         }
 
         ::selection {
-            background: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
+            background: rgba(15, 23, 42, 0.12);
+            color: var(--text-main);
         }
 
         ::-webkit-scrollbar {
@@ -63,11 +68,11 @@
             background: var(--bg-base);
         }
         ::-webkit-scrollbar-thumb {
-            background: var(--bg-subtle);
+            background: #cbd5e1;
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #2a3859;
+            background: #94a3b8;
         }
 
         body {
@@ -86,7 +91,7 @@
         header {
             height: 64px;
             border-bottom: 1px solid var(--border-subtle);
-            background: rgba(15, 21, 35, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(12px);
             padding: 0 2rem;
             display: flex;
@@ -108,13 +113,12 @@
         .brand-icon {
             width: 32px;
             height: 32px;
-            background: var(--bg-subtle);
-            border: 1px solid var(--border-strong);
+            background: #0f172a;
             border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--brand-primary);
+            color: #ffffff;
         }
 
         .brand-text h1 {
@@ -162,7 +166,8 @@
             text-decoration: none;
             padding: 6px 12px;
             border-radius: var(--radius-sm);
-            border: 1px solid transparent;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-surface);
             transition: all 0.15s ease;
             display: flex;
             align-items: center;
@@ -172,7 +177,7 @@
         .nav-link:hover {
             color: var(--text-main);
             background: var(--bg-subtle);
-            border-color: var(--border-subtle);
+            border-color: var(--border-strong);
         }
 
         /* Container */
@@ -194,7 +199,7 @@
             font-size: 1.85rem;
             font-weight: 700;
             letter-spacing: -0.025em;
-            color: #ffffff;
+            color: var(--text-main);
             margin-bottom: 0.5rem;
         }
 
@@ -214,11 +219,11 @@
 
         .mode-selector {
             display: inline-flex;
-            background: var(--bg-surface);
+            background: var(--bg-subtle);
             border: 1px solid var(--border-subtle);
             padding: 4px;
             border-radius: var(--radius-md);
-            gap: 2px;
+            gap: 4px;
         }
 
         .mode-btn {
@@ -241,9 +246,11 @@
         }
 
         .mode-btn.active {
-            background: var(--bg-subtle);
-            color: #ffffff;
-            border: 1px solid var(--border-strong);
+            background: #ffffff;
+            color: var(--text-main);
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-subtle);
         }
 
         /* Main Grid */
@@ -262,6 +269,7 @@
 
         .panel {
             background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-card);
             padding: 1.5rem;
@@ -287,8 +295,9 @@
         .endpoint-badge {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.72rem;
-            color: var(--brand-primary);
-            background: var(--brand-subtle);
+            color: var(--text-secondary);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-subtle);
             padding: 2px 7px;
             border-radius: 4px;
         }
@@ -307,8 +316,8 @@
         textarea {
             width: 100%;
             height: 130px;
-            background: var(--bg-base);
-            border: 1px solid var(--border-subtle);
+            background: #ffffff;
+            border: 1px solid var(--border-strong);
             border-radius: var(--radius-md);
             padding: 12px 14px;
             color: var(--text-main);
@@ -321,8 +330,8 @@
         }
 
         textarea:focus {
-            border-color: var(--border-focus);
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
         }
 
         textarea::placeholder {
@@ -364,14 +373,14 @@
         .chip:hover {
             color: var(--text-main);
             border-color: var(--border-strong);
-            background: #232d42;
+            background: #e2e8f0;
         }
 
         /* Dropzone Upload */
         .dropzone {
             border: 1px dashed var(--border-strong);
             border-radius: var(--radius-md);
-            background: var(--bg-base);
+            background: var(--bg-card-inner);
             padding: 2.25rem 1rem;
             text-align: center;
             cursor: pointer;
@@ -385,8 +394,8 @@
         }
 
         .dropzone:hover, .dropzone.dragover {
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.02);
+            border-color: var(--brand-primary);
+            background: #f1f5f9;
         }
 
         .dropzone input[type="file"] {
@@ -433,6 +442,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            color: var(--text-main);
         }
 
         .file-remove-btn {
@@ -447,16 +457,16 @@
         }
 
         .file-remove-btn:hover {
-            color: #ffffff;
+            color: var(--text-main);
         }
 
         /* Action Button */
         .btn-submit {
-            background: #ffffff;
-            color: #090d16;
-            border: 1px solid rgba(255, 255, 255, 0.9);
+            background: var(--brand-primary);
+            color: #ffffff;
+            border: none;
             border-radius: var(--radius-md);
-            padding: 10px 16px;
+            padding: 11px 16px;
             font-size: 0.875rem;
             font-weight: 600;
             cursor: pointer;
@@ -465,25 +475,27 @@
             justify-content: center;
             gap: 8px;
             transition: all 0.15s ease;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
         }
 
         .btn-submit:hover {
-            background: #f1f5f9;
-            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.12);
+            background: var(--brand-primary-hover);
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+            transform: translateY(-1px);
         }
 
         .btn-submit:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
 
         /* Notification Toast */
         .toast {
             display: none;
-            background: rgba(244, 63, 94, 0.12);
-            border: 1px solid rgba(244, 63, 94, 0.3);
-            color: #fecdd3;
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #be123c;
             font-size: 0.8125rem;
             padding: 8px 12px;
             border-radius: var(--radius-sm);
@@ -526,7 +538,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 1rem 1.25rem;
-            background: var(--bg-base);
+            background: var(--bg-card-inner);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
         }
@@ -564,7 +576,8 @@
         .source-indicator {
             font-size: 0.75rem;
             font-family: 'JetBrains Mono', monospace;
-            color: var(--text-muted);
+            color: var(--text-secondary);
+            font-weight: 500;
             text-transform: uppercase;
         }
 
@@ -595,10 +608,9 @@
 
         .track-bar {
             height: 8px;
-            background: var(--bg-base);
+            background: #e2e8f0;
             border-radius: 4px;
             overflow: hidden;
-            border: 1px solid var(--border-subtle);
         }
 
         .track-fill {
@@ -624,12 +636,12 @@
         }
 
         .transcript-text {
-            background: var(--bg-base);
+            background: var(--bg-card-inner);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
             padding: 12px 14px;
             font-size: 0.875rem;
-            color: #cbd5e1;
+            color: var(--text-main);
             line-height: 1.5;
             max-height: 120px;
             overflow-y: auto;
@@ -653,12 +665,13 @@
             width: 60px;
             text-transform: capitalize;
             color: var(--text-secondary);
+            font-weight: 500;
         }
 
         .dist-bar-track {
             flex: 1;
             height: 6px;
-            background: var(--bg-base);
+            background: #e2e8f0;
             border-radius: 3px;
             overflow: hidden;
         }
@@ -674,42 +687,44 @@
             text-align: right;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
-            color: var(--text-muted);
+            color: var(--text-secondary);
         }
 
         /* Raw JSON Collapsible */
         details {
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            background: var(--bg-base);
+            background: var(--bg-card-inner);
             overflow: hidden;
         }
 
         summary {
             padding: 8px 12px;
             font-size: 0.78rem;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             cursor: pointer;
             user-select: none;
             outline: none;
+            font-weight: 500;
         }
 
         summary:hover {
-            color: var(--text-secondary);
+            color: var(--text-main);
         }
 
         pre {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
             padding: 12px;
-            background: #060911;
+            background: #0f172a;
+            color: #38bdf8;
             border-top: 1px solid var(--border-subtle);
             overflow-x: auto;
-            color: #e2e8f0;
         }
 
         footer {
             border-top: 1px solid var(--border-subtle);
+            background: #ffffff;
             padding: 1.5rem;
             text-align: center;
             font-size: 0.78rem;
@@ -911,8 +926,8 @@
 
                 <!-- État initial vide -->
                 <div class="state-empty" id="state-empty">
-                    <svg class="state-empty-icon" viewBox="0 0 24 24">
-                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    <svg class="state-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                     </svg>
                     <p>Sélectionnez une modalité et déclenchez l'analyse pour visualiser la prédiction unifiée.</p>
                 </div>
