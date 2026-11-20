@@ -93,7 +93,7 @@ Pour entraîner ou ré-entraîner le modèle à partir du dataset :
 python train.py
 ```
 Cette commande :
-1. Charge les avis du dataset e-commerce (`textes.csv` et enrichissements de référence).
+1. Charge strictement les avis du jeu de données textuel fourni (`textes.csv`).
 2. Applique le prétraitement textuel (normalisation NFKD, mise en minuscules, suppression des stop-words non polarisés tout en préservant scrupuleusement les négations).
 3. Vectorise le corpus avec `TfidfVectorizer(ngram_range=(1, 2), sublinear_tf=True)`.
 4. Évalue par validation croisée stratifiée 5-folds (`StratifiedKFold`).
