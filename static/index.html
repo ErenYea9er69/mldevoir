@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Voice — Sentiment Multi-source</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-card: #111827;
+            --bg-card-hover: #1f2937;
+            --border-color: #374151;
+            --accent-primary: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.25);
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --positive: #10b981;
+            --positive-glow: rgba(16, 185, 129, 0.25);
+            --negative: #ef4444;
+            --negative-glow: rgba(239, 68, 68, 0.25);
+            --neutral: #64748b;
+            --neutral-glow: rgba(100, 116, 139, 0.25);
+            --radius-lg: 16px;
+            --radius-md: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 14px var(--accent-glow);
+        }
+
+        .logo-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--positive);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--positive);
+            box-shadow: 0 0 8px var(--positive);
+        }
+
+        .btn-docs {
+            text-decoration: none;
+            color: var(--text-primary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-docs:hover {
+            background: var(--border-color);
+        }
+
+        main {
+            max-width: 1100px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        /* Tabs Navigation */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 2rem;
+            background: rgba(31, 41, 55, 0.5);
+            padding: 6px;
+            border-radius: 14px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background: var(--accent-primary);
+            color: #ffffff;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        /* Grid Workspace */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 840px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .input-pane {
+            display: none;
+        }
+
+        .input-pane.active {
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            height: 140px;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            border-color: var(--accent-primary);
+        }
+
+        /* Upload Dropzone */
+        .dropzone {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2rem 1rem;
+            text-align: center;
+            background: #0f172a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .dropzone-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .dropzone-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .dropzone-sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .dropzone input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-preview {
+            margin-top: 1rem;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: #1e293b;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+        }
+
+        .presets {
+            margin-top: 1rem;
+        }
+
+        .presets-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .preset-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .preset-btn {
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .preset-btn:hover {
+            color: #ffffff;
+            border-color: var(--accent-primary);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--accent-primary);
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1.25rem;
+            box-shadow: 0 4px 14px var(--accent-glow);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Result View */
+        .result-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .result-empty-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .result-content {
+            display: none;
+        }
+
+        .badge-sentiment {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .badge-sentiment.positif {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--positive);
+            border: 1px solid var(--positive);
+            box-shadow: 0 0 15px var(--positive-glow);
+        }
+
+        .badge-sentiment.negatif {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--negative);
+            border: 1px solid var(--negative);
+            box-shadow: 0 0 15px var(--negative-glow);
+        }
+
+        .badge-sentiment.neutre {
+            background: rgba(100, 116, 139, 0.2);
+            color: #94a3b8;
+            border: 1px solid #64748b;
+            box-shadow: 0 0 15px var(--neutral-glow);
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+
+        .extracted-box {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            margin-bottom: 1.25rem;
+            font-size: 0.9rem;
+            max-height: 120px;
+            overflow-y: auto;
+            font-style: italic;
+            color: #cbd5e1;
+        }
+
+        /* Confidence Gauge */
+        .gauge-section {
+            margin-bottom: 1.25rem;
+        }
+
+        .gauge-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .gauge-bar-bg {
+            height: 10px;
+            background: #1e293b;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .gauge-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-primary);
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Probabilities distribution */
+        .probs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+
+        .prob-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+        }
+
+        .prob-label {
+            width: 60px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .prob-bar-bg {
+            flex: 1;
+            height: 6px;
+            background: #1e293b;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .prob-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .prob-val {
+            width: 45px;
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+        }
+
+        /* Raw JSON Inspector */
+        details {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            background: #0f172a;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        summary {
+            padding: 8px 12px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        pre {
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #38bdf8;
+            overflow-x: auto;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-group">
+            <div class="logo-icon">🛍️</div>
+            <div>
+                <div class="logo-title">Customer Voice Classifier</div>
+                <div class="logo-subtitle">Mini-projet ML Appliqué — Cascade Multimodale</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <span class="badge-status">
+                <span class="badge-dot"></span>
+                API Prête
+            </span>
+            <a href="/docs" target="_blank" class="btn-docs">Swagger /docs</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="hero">
+            <h1>Analyse de Sentiment E-commerce</h1>
+            <p>Système unifié analysant le sentiment client à partir de formulaire textuel, de capture d'écran (OCR) ou de dictée vocale (ASR).</p>
+        </div>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('text')">✍️ Texte</button>
+            <button class="tab-btn" onclick="switchTab('image')">🖼️ Image (OCR)</button>
+            <button class="tab-btn" onclick="switchTab('audio')">🎙️ Audio (ASR)</button>
+            <button class="tab-btn" onclick="switchTab('auto')">⚡ Auto-Détection</button>
+        </div>
+
+        <div class="workspace-grid">
+            <!-- Colonne Saisie -->
+            <div class="card">
+                <div class="card-title">
+                    <span id="card-mode-title">Saisie Textuelle</span>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);" id="card-mode-endpoint">POST /predict/text</span>
+                </div>
+
+                <!-- Panneau Texte -->
+                <div id="pane-text" class="input-pane active">
+                    <textarea id="text-input" placeholder="Saisissez ou collez un avis client..."></textarea>
+                    <div class="presets">
+                        <div class="presets-title">Exemples prédéfinis :</div>
+                        <div class="preset-pills">
+                            <button class="preset-btn" onclick="setSampleText('Produit conforme à la description, livraison super rapide en 24h, je recommande vivement !')">Positif</button>
+                            <button class="preset-btn" onclick="setSampleText('Article reçu cassé et le service client ne répond pas depuis une semaine. Très déçu.')">Négatif</button>
+                            <button class="preset-btn" onclick="setSampleText('Le colis est arrivé dans les délais annoncés. L\'emballage est standard.')">Neutre</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panneau Image -->
+                <div id="pane-image" class="input-pane">
+                    <div class="dropzone" id="image-dropzone">
+                        <div class="dropzone-icon">📷</div>
+                        <div class="dropzone-label">Déposez une capture d'écran ici</div>
+                        <div class="dropzone-sub">PNG, JPG, WEBP jusqu'à 10 Mo</div>
+                        <input type="file" id="image-file" accept="image/*" onchange="handleFileSelect('image')">
+                    </div>
+                    <div class="file-preview" id="image-preview">
+                        <span id="image-name">fichier.png</span>
+                        <button class="preset-btn" onclick="clearFile('image')">✕</button>
+                    </div>
+                    <div class="presets">
+                        <div class="presets-title">Exemples d'images du projet :</div>
+                        <div class="preset-pills">
+                            <button class="preset-btn" onclick="loadSampleAsset('image', 'I01.png')">I01.png (Positif)</button>
+                            <button class="preset-btn" onclick="loadSampleAsset('image', 'I02.png')">I02.png (Négatif)</button>
+                            <button class="preset-btn" onclick="loadSampleAsset('image', 'I03.png')">I03.png (Neutre)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panneau Audio -->
+                <div id="pane-audio" class="input-pane">
+                    <div class="dropzone" id="audio-dropzone">
+                        <div class="dropzone-icon">🎧</div>
+                        <div class="dropzone-label">Déposez un fichier audio vocal</div>
+                        <div class="dropzone-sub">MP3, WAV, OGG jusqu'à 10 Mo</div>
+                        <input type="file" id="audio-file" accept="audio/*" onchange="handleFileSelect('audio')">
+                    </div>
+                    <div class="file-preview" id="audio-preview">
+                        <span id="audio-name">audio.mp3</span>
+                        <button class="preset-btn" onclick="clearFile('audio')">✕</button>
+                    </div>
+                    <div class="presets">
+                        <div class="presets-title">Exemples audios du projet :</div>
+                        <div class="preset-pills">
+                            <button class="preset-btn" onclick="loadSampleAsset('audio', 'A01.mp3')">A01.mp3 (Positif)</button>
+                            <button class="preset-btn" onclick="loadSampleAsset('audio', 'A02.mp3')">A02.mp3 (Négatif)</button>
+                            <button class="preset-btn" onclick="loadSampleAsset('audio', 'A03.mp3')">A03.mp3 (Neutre)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panneau Auto-Détection -->
+                <div id="pane-auto" class="input-pane">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+                        L'endpoint universel <code style="color: #818cf8;">POST /predict</code> détecte automatiquement s'il reçoit du texte JSON, une image (OCR) ou un fichier audio (ASR).
+                    </p>
+                    <textarea id="auto-text-input" placeholder="Entrez un avis texte OU déposez un fichier ci-dessous..."></textarea>
+                    <div class="dropzone" style="margin-top: 10px; padding: 1.25rem;" id="auto-dropzone">
+                        <div class="dropzone-icon" style="font-size: 24px;">📁</div>
+                        <div class="dropzone-label" style="font-size: 0.85rem;">Fichier image ou audio facultatif</div>
+                        <input type="file" id="auto-file" onchange="handleFileSelect('auto')">
+                    </div>
+                    <div class="file-preview" id="auto-preview">
+                        <span id="auto-name">fichier</span>
+                        <button class="preset-btn" onclick="clearFile('auto')">✕</button>
+                    </div>
+                </div>
+
+                <button class="submit-btn" id="submit-btn" onclick="runPrediction()">
+                    <span id="btn-text">🚀 Prédire le Sentiment</span>
+                </button>
+            </div>
+
+            <!-- Colonne Résultats -->
+            <div class="card">
+                <div class="card-title">
+                    <span>Résultat Prédictif</span>
+                    <span id="execution-time" style="font-size: 0.8rem; color: var(--text-muted);"></span>
+                </div>
+
+                <div class="result-empty" id="result-empty">
+                    <div class="result-empty-icon">📊</div>
+                    <p>Sélectionnez une modalité et lancez l'analyse pour afficher la prédiction.</p>
+                </div>
+
+                <div class="result-content" id="result-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="badge-sentiment positif" id="sentiment-badge">
+                            <span id="sentiment-icon">😊</span>
+                            <span id="sentiment-text">POSITIF</span>
+                        </div>
+                        <span id="source-tag" style="font-size: 0.8rem; background: #1e293b; padding: 4px 10px; border-radius: 6px; text-transform: uppercase;"></span>
+                    </div>
+
+                    <div class="gauge-section">
+                        <div class="gauge-header">
+                            <span>Score de confiance</span>
+                            <span id="confidence-val" style="font-family: 'JetBrains Mono'; color: var(--accent-primary);">89.2%</span>
+                        </div>
+                        <div class="gauge-bar-bg">
+                            <div class="gauge-bar-fill" id="confidence-bar"></div>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">
+                        Texte extrait / analysé :
+                    </div>
+                    <div class="extracted-box" id="extracted-text"></div>
+
+                    <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; text-transform: uppercase;">
+                        Distribution des probabilités :
+                    </div>
+                    <div class="probs-list" id="probs-list"></div>
+
+                    <details>
+                        <summary>Payload JSON brut de l'API</summary>
+                        <pre id="raw-json"></pre>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        Mini-projet ML Appliqué 2026 — Architecture en Cascade (OCR + ASR + Sentiment Textuel) — FastAPI & Pydantic
+    </footer>
+
+    <script>
+        let currentTab = 'text';
+        let selectedFiles = { image: null, audio: null, auto: null };
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.input-pane').forEach(p => p.classList.remove('active'));
+            
+            event.currentTarget.classList.add('active');
+            document.getElementById(`pane-${tab}`).classList.add('active');
+
+            const modeTitle = document.getElementById('card-mode-title');
+            const modeEndpoint = document.getElementById('card-mode-endpoint');
+
+            if (tab === 'text') {
+                modeTitle.innerText = "Saisie Textuelle";
+                modeEndpoint.innerText = "POST /predict/text";
+            } else if (tab === 'image') {
+                modeTitle.innerText = "Traitement Image (OCR)";
+                modeEndpoint.innerText = "POST /predict/image";
+            } else if (tab === 'audio') {
+                modeTitle.innerText = "Traitement Audio (ASR)";
+                modeEndpoint.innerText = "POST /predict/audio";
+            } else {
+                modeTitle.innerText = "Détection Automatique";
+                modeEndpoint.innerText = "POST /predict";
+            }
+        }
+
+        function setSampleText(txt) {
+            document.getElementById('text-input').value = txt;
+        }
+
+        function handleFileSelect(type) {
+            const input = document.getElementById(`${type}-file`);
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                selectedFiles[type] = file;
+                document.getElementById(`${type}-name`).innerText = `${file.name} (${(file.size / 1024).toFixed(1)} Ko)`;
+                document.getElementById(`${type}-preview`).style.display = 'flex';
+            }
+        }
+
+        function clearFile(type) {
+            selectedFiles[type] = null;
+            document.getElementById(`${type}-file`).value = '';
+            document.getElementById(`${type}-preview`).style.display = 'none';
+        }
+
+        async function loadSampleAsset(type, filename) {
+            try {
+                const folder = type === 'image' ? 'images' : 'audios';
+                const res = await fetch(`/dataset_sentiment_ecommerce/${folder}/${filename}`);
+                if (!res.ok) {
+                    alert(`Impossible de charger l'exemple ${filename}`);
+                    return;
+                }
+                const blob = await res.blob();
+                const file = new File([blob], filename, { type: blob.type });
+                selectedFiles[type] = file;
+                document.getElementById(`${type}-name`).innerText = `${filename} (${(file.size / 1024).toFixed(1)} Ko)`;
+                document.getElementById(`${type}-preview`).style.display = 'flex';
+            } catch (err) {
+                alert(`Erreur de chargement : ${err.message}`);
+            }
+        }
+
+        async function runPrediction() {
+            const btn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            btn.disabled = true;
+            btnText.innerHTML = "⏳ Analyse en cours...";
+
+            const startTime = performance.now();
+            let url = '';
+            let options = {};
+
+            try {
+                if (currentTab === 'text') {
+                    const text = document.getElementById('text-input').value.trim();
+                    if (!text) {
+                        alert("Veuillez saisir un texte.");
+                        return;
+                    }
+                    url = '/predict/text';
+                    options = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ texte: text })
+                    };
+                } else if (currentTab === 'image') {
+                    if (!selectedFiles.image) {
+                        alert("Veuillez sélectionner une image.");
+                        return;
+                    }
+                    url = '/predict/image';
+                    const formData = new FormData();
+                    formData.append('file', selectedFiles.image);
+                    options = { method: 'POST', body: formData };
+                } else if (currentTab === 'audio') {
+                    if (!selectedFiles.audio) {
+                        alert("Veuillez sélectionner un fichier audio.");
+                        return;
+                    }
+                    url = '/predict/audio';
+                    const formData = new FormData();
+                    formData.append('file', selectedFiles.audio);
+                    options = { method: 'POST', body: formData };
+                } else {
+                    url = '/predict';
+                    if (selectedFiles.auto) {
+                        const formData = new FormData();
+                        formData.append('file', selectedFiles.auto);
+                        options = { method: 'POST', body: formData };
+                    } else {
+                        const text = document.getElementById('auto-text-input').value.trim();
+                        if (!text) {
+                            alert("Veuillez saisir du texte ou déposer un fichier.");
+                            return;
+                        }
+                        options = {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ texte: text })
+                        };
+                    }
+                }
+
+                const response = await fetch(url, options);
+                const data = await response.json();
+                const elapsed = (performance.now() - startTime).toFixed(0);
+
+                if (!response.ok) {
+                    throw new Error(data.detail || "Erreur de traitement.");
+                }
+
+                displayResult(data, elapsed);
+
+            } catch (err) {
+                alert(`Erreur : ${err.message}`);
+            } finally {
+                btn.disabled = false;
+                btnText.innerHTML = "🚀 Prédire le Sentiment";
+            }
+        }
+
+        function displayResult(data, elapsedMs) {
+            document.getElementById('result-empty').style.display = 'none';
+            document.getElementById('result-content').style.display = 'block';
+            document.getElementById('execution-time').innerText = `${elapsedMs} ms`;
+
+            // Badge sentiment
+            const badge = document.getElementById('sentiment-badge');
+            const icon = document.getElementById('sentiment-icon');
+            const text = document.getElementById('sentiment-text');
+
+            badge.className = `badge-sentiment ${data.sentiment_predit}`;
+            text.innerText = data.sentiment_predit.toUpperCase();
+
+            if (data.sentiment_predit === 'positif') {
+                icon.innerText = "😊";
+            } else if (data.sentiment_predit === 'negatif') {
+                icon.innerText = "😡";
+            } else {
+                icon.innerText = "😐";
+            }
+
+            document.getElementById('source-tag').innerText = `Source: ${data.source}`;
+            document.getElementById('extracted-text').innerText = data.texte_extrait;
+
+            const confPercent = (data.confiance * 100).toFixed(1);
+            document.getElementById('confidence-val').innerText = `${confPercent}%`;
+            document.getElementById('confidence-bar').style.width = `${confPercent}%`;
+
+            // Probas détaillées
+            const probsList = document.getElementById('probs-list');
+            probsList.innerHTML = '';
+            if (data.details) {
+                const colors = { positif: '#10b981', negatif: '#ef4444', neutre: '#64748b' };
+                for (const [cls, prob] of Object.entries(data.details)) {
+                    const pct = (prob * 100).toFixed(1);
+                    const item = document.createElement('div');
+                    item.className = 'prob-item';
+                    item.innerHTML = `
+                        <span class="prob-label">${cls}</span>
+                        <div class="prob-bar-bg">
+                            <div class="prob-bar-fill" style="width: ${pct}%; background: ${colors[cls] || '#6366f1'};"></div>
+                        </div>
+                        <span class="prob-val">${pct}%</span>
+                    `;
+                    probsList.appendChild(item);
+                }
+            }
+
+            document.getElementById('raw-json').innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>

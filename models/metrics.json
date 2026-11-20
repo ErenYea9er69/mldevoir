@@ -1,0 +1,62 @@
+{
+  "dataset_size": 42,
+  "include_multimodal": true,
+  "classes": [
+    "negatif",
+    "neutre",
+    "positif"
+  ],
+  "training_accuracy": 1.0,
+  "cv_accuracy_mean": 0.6889,
+  "cv_accuracy_std": 0.1626,
+  "confusion_matrix": [
+    [
+      14,
+      0,
+      0
+    ],
+    [
+      0,
+      14,
+      0
+    ],
+    [
+      0,
+      0,
+      14
+    ]
+  ],
+  "classification_report": {
+    "negatif": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 14.0
+    },
+    "neutre": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 14.0
+    },
+    "positif": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 14.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 42.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 42.0
+    }
+  }
+}
