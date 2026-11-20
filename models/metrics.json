@@ -1,29 +1,29 @@
 {
-  "dataset_size": 42,
-  "include_multimodal": true,
+  "dataset": "textes.csv",
+  "dataset_size": 24,
   "classes": [
     "negatif",
     "neutre",
     "positif"
   ],
   "training_accuracy": 1.0,
-  "cv_accuracy_mean": 0.6889,
-  "cv_accuracy_std": 0.1626,
+  "cv_accuracy_mean": 0.3333,
+  "cv_accuracy_std": 0.0589,
   "confusion_matrix": [
     [
-      14,
+      8,
       0,
       0
     ],
     [
       0,
-      14,
+      8,
       0
     ],
     [
       0,
       0,
-      14
+      8
     ]
   ],
   "classification_report": {
@@ -31,32 +31,32 @@
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 14.0
+      "support": 8.0
     },
     "neutre": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 14.0
+      "support": 8.0
     },
     "positif": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 14.0
+      "support": 8.0
     },
     "accuracy": 1.0,
     "macro avg": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 42.0
+      "support": 24.0
     },
     "weighted avg": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 42.0
+      "support": 24.0
     }
   }
 }
