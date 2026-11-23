@@ -40,11 +40,10 @@ st.sidebar.markdown(f"- [Swagger UI Documentation]({api_url}/docs)")
 st.sidebar.markdown(f"- [ReDoc Documentation]({api_url}/redoc)")
 
 # Tabs
-tab_text, tab_image, tab_audio, tab_auto, tab_metrics = st.tabs([
+tab_text, tab_image, tab_audio, tab_metrics = st.tabs([
     "✍️ Texte",
     "🖼️ Image (OCR)",
     "🎙️ Audio (ASR)",
-    "⚡ Auto-Détection",
     "📊 Métriques du Modèle"
 ])
 
@@ -151,34 +150,7 @@ with tab_audio:
                 except Exception as e:
                     st.error(f"Échec de la connexion à l'API : {e}")
 
-# 4. TAB AUTO-DÉTECTION
-with tab_auto:
-    st.subheader("Détection automatique de la modalité (POST /predict)")
-    st.write("Cet endpoint unifié analyse le type de payload et oriente automatiquement vers le bon pipeline.")
-
-    auto_text = st.text_area("Texte direct (facultatif si un fichier est sélectionné) :", height=80)
-    auto_file = st.file_uploader("Ou importez n'importe quel fichier supporté (Image ou Audio) :", key="auto_file")
-
-    if st.button("⚡ Lancer la détection automatique", key="btn_auto"):
-        with st.spinner("Détection automatique et analyse..."):
-            try:
-                if auto_file is not None:
-                    files = {"file": (auto_file.name, auto_file.getvalue(), auto_file.type)}
-                    res = requests.post(f"{api_url}/predict", files=files)
-                elif auto_text.strip():
-                    res = requests.post(f"{api_url}/predict", json={"texte": auto_text.strip()})
-                else:
-                    st.error("Veuillez fournir du texte ou importer un fichier.")
-                    res = None
-
-                if res and res.status_code == 200:
-                    display_prediction_result(res.json())
-                elif res:
-                    st.error(f"Erreur API ({res.status_code}) : {res.text}")
-            except Exception as e:
-                st.error(f"Échec de la connexion à l'API : {e}")
-
-# 5. TAB METRICS
+# 4. TAB METRICS
 with tab_metrics:
     st.subheader("Évaluation et métriques du modèle entraîné")
     metrics_path = Path("models/metrics.json")

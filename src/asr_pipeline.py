@@ -142,3 +142,13 @@ def process_audio_sentiment(
     sentiment, confiance, details = clf.predict(texte_extrait)
 
     return texte_extrait, sentiment, confiance, details
+
+
+if __name__ == "__main__":
+    import sys
+    target = sys.argv[1] if len(sys.argv) > 1 else "dataset_sentiment_ecommerce/audios/A01.mp3"
+    print(f"--- Test ASR sur : {target} ---")
+    txt, sent, conf, details = process_audio_sentiment(target)
+    print(f"Transcription : {txt}")
+    print(f"Sentiment     : {sent.upper()} (Confiance: {conf*100:.1f}%)")
+    print(f"Détails       : {details}")

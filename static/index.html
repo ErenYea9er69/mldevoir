@@ -795,12 +795,6 @@
                     </svg>
                     Audio (ASR)
                 </button>
-                <button type="button" class="mode-btn" onclick="switchMode('auto', this)">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                    </svg>
-                    Auto-Détection
-                </button>
             </nav>
         </div>
 
@@ -889,29 +883,6 @@
                     </div>
                 </div>
 
-                <!-- 4. Mode Auto-Détection -->
-                <div id="view-auto" class="input-view">
-                    <p style="font-size: 0.8125rem; color: var(--text-secondary);">
-                        L'endpoint universel analyse l'en-tête Content-Type et le contenu pour router automatiquement vers le bon pipeline.
-                    </p>
-                    <textarea id="auto-text-input" placeholder="Saisir un texte OU déposer un fichier ci-dessous..."></textarea>
-                    <div class="dropzone" style="padding: 1.5rem 1rem;" id="auto-dropzone">
-                        <svg class="dropzone-icon" style="width: 24px; height: 24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                        <span class="dropzone-title" style="font-size: 0.8125rem;">Déposer un fichier quelconque (image ou audio)</span>
-                        <input type="file" id="auto-file" onchange="onFileSelected('auto')">
-                    </div>
-                    <div class="file-selected-bar" id="auto-file-bar">
-                        <div class="file-info">
-                            <span id="auto-filename">fichier</span>
-                        </div>
-                        <button type="button" class="file-remove-btn" onclick="clearSelectedFile('auto')">✕</button>
-                    </div>
-                </div>
-
                 <button type="button" class="btn-submit" id="submit-btn" onclick="executePrediction()">
                     <span id="btn-label">Analyser l'Avis</span>
                 </button>
@@ -976,20 +947,18 @@
 
     <script>
         let activeMode = 'text';
-        let stagedFiles = { image: null, audio: null, auto: null };
+        let stagedFiles = { image: null, audio: null };
 
         const endpoints = {
             text: 'POST /predict/text',
             image: 'POST /predict/image',
-            audio: 'POST /predict/audio',
-            auto: 'POST /predict'
+            audio: 'POST /predict/audio'
         };
 
         const titles = {
             text: 'Saisie Textuelle',
             image: 'Traitement Image (OCR)',
-            audio: 'Traitement Audio (ASR)',
-            auto: 'Détection Automatique'
+            audio: 'Traitement Audio (ASR)'
         };
 
         function showToast(msg) {
@@ -1090,24 +1059,6 @@
                     const form = new FormData();
                     form.append('file', stagedFiles.audio);
                     requestInit = { method: 'POST', body: form };
-                } else {
-                    targetUrl = '/predict';
-                    if (stagedFiles.auto) {
-                        const form = new FormData();
-                        form.append('file', stagedFiles.auto);
-                        requestInit = { method: 'POST', body: form };
-                    } else {
-                        const text = document.getElementById('auto-text-input').value.trim();
-                        if (!text) {
-                            showToast("Fournissez un texte ou un fichier pour l'auto-détection.");
-                            return;
-                        }
-                        requestInit = {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ texte: text })
-                        };
-                    }
                 }
 
                 const res = await fetch(targetUrl, requestInit);

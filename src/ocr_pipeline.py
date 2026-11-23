@@ -1,4 +1,4 @@
-"""Pipeline de prétraitement d'images et extraction OCR (Étape 2)."""
+"""Pipeline de prétraitement d'images et extraction OCR Tesseract"""
 import io
 import os
 import shutil
@@ -78,7 +78,10 @@ def extract_text_from_image(image_input: Union[str, Path, bytes, Image.Image]) -
     # Repli Windows Media OCR
     if WINOCR_AVAILABLE and os.name == "nt":
         try:
-            result = winocr.recognize_pil_sync(img)
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(winocr.recognize_pil_sync, img)
+                result = future.result()
             text = result.get("text", "").strip()
             if text:
                 return text
@@ -104,3 +107,13 @@ def process_image_sentiment(
     sentiment, confiance, details = clf.predict(texte_extrait)
 
     return texte_extrait, sentiment, confiance, details
+
+
+if __name__ == "__main__":
+    import sys
+    target = sys.argv[1] if len(sys.argv) > 1 else "dataset_sentiment_ecommerce/images/I01.png"
+    print(f"--- Test OCR sur : {target} ---")
+    txt, sent, conf, details = process_image_sentiment(target)
+    print(f"Texte Extrait : {txt}")
+    print(f"Sentiment     : {sent.upper()} (Confiance: {conf*100:.1f}%)")
+    print(f"Détails       : {details}")
