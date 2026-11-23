@@ -124,7 +124,7 @@ L'application web est directement servie par FastAPI. Il suffit d'ouvrir dans un
 👉 **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
 
 Fonctionnalités :
-- Onglets dédiés : ✍️ Texte, 🖼️ Image (OCR), 🎙️ Audio (ASR), ⚡ Auto-Détection.
+- Onglets dédiés : ✍️ Texte, 🖼️ Image (OCR), 🎙️ Audio (ASR).
 - Boutons d'exemples pré-remplis en 1 clic.
 - Affichage visuel du sentiment (vert positif, rouge négatif, gris neutre).
 - Jauge animée du score de confiance et répartition des probabilités par classe.
@@ -230,3 +230,5 @@ curl -X POST "http://127.0.0.1:8000/predict" \
 5. **FastAPI & Validation Pydantic :**
    - Contrôle strict des types MIME, des extensions autorisées et de la taille maximale des fichiers (10 Mo).
    - Documentation interactive OpenAPI/Swagger générée automatiquement.
+#   m l d e v o i r  
+ 
